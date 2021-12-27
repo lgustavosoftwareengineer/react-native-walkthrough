@@ -35,7 +35,8 @@ const TooltipBalloonContent = () => {
 };
 
 const App = () => {
-  const [visible, setVisible] = useState(false);
+  const [visible1, setVisible1] = useState(false);
+  const [visible2, setVisible2] = useState(false);
 
   return (
     <SafeAreaView>
@@ -43,15 +44,28 @@ const App = () => {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.contentContainer}>
         <View>
-          <Button title={'Abrir modal'} onPress={() => setVisible(true)} />
+          <Button title={'Abrir modal'} onPress={() => setVisible1(true)} />
         </View>
         <TestComponent />
         <TestComponent />
         <TestComponent />
-        <TestComponent />
         <TooltipElement
-          visible={visible}
-          onRequestClose={() => setVisible(false)}
+          visible={visible1}
+          onRequestClose={() => {
+            setVisible1(false);
+            setTimeout(() => {
+              setVisible2(true);
+            }, 500);
+          }}
+          tooltipBallonContent={<TooltipBalloonContent />}
+          ballonPosition="bottom"
+          ballonStyle={styles.ballon}
+          blurAmount={BLUR_AMOUNT}>
+          <TestComponent />
+        </TooltipElement>
+        <TooltipElement
+          visible={visible2}
+          onRequestClose={() => setVisible2(false)}
           tooltipBallonContent={<TooltipBalloonContent />}
           ballonPosition="bottom"
           ballonStyle={styles.ballon}
