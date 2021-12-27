@@ -9,10 +9,12 @@ import {
   Dimensions,
   LayoutRectangle,
   LayoutChangeEvent,
+  ViewProps,
 } from 'react-native';
 import TooltipBalloon from './TooltipBalloon/TooltipBalloon';
 import {TooltipBalloonArrowPosition} from './TooltipBalloon/TooltipBalloonArrow';
 import {ElementMeasuresInfos} from './TooltipElement';
+import {calculateHorizontalPosition} from './utils';
 
 export const BalloonPosition = {
   TOP: 'top',
@@ -32,21 +34,21 @@ export type TooltipElementModalProps = {
   tooltipBallonContent: React.ReactNode;
   ballonPosition?: BalloonPositionType;
   ballonStyle?: StyleProp<ViewStyle>;
+  backgroundComponent?: React.ComponentType<ViewProps>;
 };
 
-const selectTooltipBeginPlace = (isTheElementPositionedInRight: boolean) => {
-  const BEGIN_VALUE = 0;
-
-  if (isTheElementPositionedInRight) {
-    return {
-      right: BEGIN_VALUE,
-    };
-  }
-
-  return {
-    left: BEGIN_VALUE,
-  };
+const ARROW_POSITIONS = {
+  [BalloonPosition.BOTTOM]: TooltipBalloonArrowPosition.TOP,
+  [BalloonPosition.TOP]: TooltipBalloonArrowPosition.BOTTOM,
+  [BalloonPosition.LEFT]: TooltipBalloonArrowPosition.RIGHT,
+  [BalloonPosition.RIGHT]: TooltipBalloonArrowPosition.LEFT,
 };
+
+function calculateTooltipBalloonHorizontalPosition(
+  isTheElementPositionedInRight: boolean,
+) {
+  return calculateHorizontalPosition({isTheElementPositionedInRight});
+}
 
 const {width: SCREEN_WIDTH} = Dimensions.get('screen');
 
@@ -58,11 +60,8 @@ export default function TooltipElementModal({
   tooltipBallonContent,
   ballonPosition = 'bottom',
   ballonStyle,
+  backgroundComponent,
 }: TooltipElementModalProps) {
-  function onRequestCloseModal() {
-    onRequestClose();
-  }
-
   function onLayoutBalloon(event: LayoutChangeEvent) {
     const layout = event.nativeEvent.layout;
 
@@ -99,11 +98,15 @@ export default function TooltipElementModal({
     },
     tooltipBallonTop: {
       bottom: y - height + ballonSpaceFromBottomToElement,
-      ...selectTooltipBeginPlace(isTheElementPositionedInRight),
+      ...calculateTooltipBalloonHorizontalPosition(
+        isTheElementPositionedInRight,
+      ),
     },
     tooltipBallonBottom: {
       top: y + height + 10,
-      ...selectTooltipBeginPlace(isTheElementPositionedInRight),
+      ...calculateTooltipBalloonHorizontalPosition(
+        isTheElementPositionedInRight,
+      ),
     },
     tooltipBallonLeft: {
       top: y,
@@ -115,29 +118,24 @@ export default function TooltipElementModal({
     },
   });
 
-  const tooltipBallonToSelectStyles = {
+  const ballonPositionStyles = {
     [BalloonPosition.BOTTOM]: styles.tooltipBallonBottom,
     [BalloonPosition.TOP]: styles.tooltipBallonTop,
     [BalloonPosition.LEFT]: styles.tooltipBallonLeft,
     [BalloonPosition.RIGHT]: styles.tooltipBallonRight,
   };
 
-  const arrowPositions = {
-    [BalloonPosition.BOTTOM]: TooltipBalloonArrowPosition.TOP,
-    [BalloonPosition.TOP]: TooltipBalloonArrowPosition.BOTTOM,
-    [BalloonPosition.LEFT]: TooltipBalloonArrowPosition.RIGHT,
-    [BalloonPosition.RIGHT]: TooltipBalloonArrowPosition.LEFT,
-  };
+  const chosenArrowPosition = ARROW_POSITIONS[ballonPosition];
 
-  const arrowPosition = arrowPositions[ballonPosition];
-
-  const chosenTooltipBallonStyle = tooltipBallonToSelectStyles[ballonPosition];
+  const chosenBallonPositionStyle = ballonPositionStyles[ballonPosition];
 
   const tooltipBallonStyle: StyleProp<ViewStyle> = StyleSheet.flatten([
     styles.defaultTooltipBallon,
-    chosenTooltipBallonStyle,
+    chosenBallonPositionStyle,
     ballonStyle,
   ]);
+
+  const BackgroundComponent = backgroundComponent ?? View;
 
   return (
     <View style={styles.container}>
@@ -146,17 +144,17 @@ export default function TooltipElementModal({
         visible={visible}
         onRequestClose={onRequestClose}
         transparent>
-        <TouchableWithoutFeedback onPress={onRequestCloseModal}>
-          <View style={styles.background}>
+        <TouchableWithoutFeedback onPress={onRequestClose}>
+          <BackgroundComponent style={styles.background}>
             <View style={styles.element}>{children}</View>
             <TooltipBalloon
               style={tooltipBallonStyle}
-              arrowPosition={arrowPosition}
+              arrowPosition={chosenArrowPosition}
               isTheElementPositionedInRight={isTheElementPositionedInRight}
               onLayoutBalloon={onLayoutBalloon}>
               {tooltipBallonContent}
             </TooltipBalloon>
-          </View>
+          </BackgroundComponent>
         </TouchableWithoutFeedback>
       </Modal>
     </View>

@@ -6,6 +6,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import {calculateHorizontalPosition} from '../utils';
 import TooltipBallonArrow, {
   TooltipBalloonArrowPositionType,
   TooltipBalloonArrowPosition,
@@ -17,21 +18,9 @@ export type TooltipBalloonProps = {
   arrowPosition?: TooltipBalloonArrowPositionType;
   isTheElementPositionedInRight: boolean;
   onLayoutBalloon: ((event: LayoutChangeEvent) => void) | undefined;
+  arrowColor?: string;
+  arrowSize?: number;
 };
-
-function setArrowPosition(isTheElementPositionedInRight: boolean) {
-  const POSITION_VALUE = 20;
-
-  if (isTheElementPositionedInRight) {
-    return {
-      right: POSITION_VALUE,
-    };
-  }
-
-  return {
-    left: POSITION_VALUE,
-  };
-}
 
 export default function TooltipBalloon({
   children,
@@ -39,56 +28,69 @@ export default function TooltipBalloon({
   arrowPosition = 'bottom',
   isTheElementPositionedInRight,
   onLayoutBalloon,
+  arrowColor,
+  arrowSize,
 }: TooltipBalloonProps) {
+  function calculateArrowHorizontalPosition() {
+    const DEFAULT_POSITION_VALUE = 20;
+
+    return calculateHorizontalPosition({
+      isTheElementPositionedInRight,
+      value: DEFAULT_POSITION_VALUE,
+    });
+  }
+
   const styles = StyleSheet.create({
     container: {
       backgroundColor: '#fff',
       borderRadius: 20,
       padding: 20,
     },
-    arrowDefaultStyle: {
+    arrowDefault: {
       position: 'absolute',
     },
-    arrowBottomStyle: {
+    arrowBottom: {
       bottom: -6,
-      ...setArrowPosition(isTheElementPositionedInRight),
+      ...calculateArrowHorizontalPosition(),
     },
-    arrowTopStyle: {
+    arrowTop: {
       top: -6,
-      ...setArrowPosition(isTheElementPositionedInRight),
+      ...calculateArrowHorizontalPosition(),
     },
-    arrowLeftStyle: {
+    arrowLeft: {
       top: 20,
       left: -6,
     },
-    arrowRightStyle: {
+    arrowRight: {
       top: 20,
       right: -6,
     },
   });
 
-  const defaultStyle = StyleSheet.flatten([styles.container, style]);
+  const defaultContainerStyle = StyleSheet.flatten([styles.container, style]);
 
-  const tooltipBallonArrowStyles = {
-    [TooltipBalloonArrowPosition.BOTTOM]: styles.arrowBottomStyle,
-    [TooltipBalloonArrowPosition.TOP]: styles.arrowTopStyle,
-    [TooltipBalloonArrowPosition.LEFT]: styles.arrowLeftStyle,
-    [TooltipBalloonArrowPosition.RIGHT]: styles.arrowRightStyle,
+  const arrowPositionsStyles = {
+    [TooltipBalloonArrowPosition.BOTTOM]: styles.arrowBottom,
+    [TooltipBalloonArrowPosition.TOP]: styles.arrowTop,
+    [TooltipBalloonArrowPosition.LEFT]: styles.arrowLeft,
+    [TooltipBalloonArrowPosition.RIGHT]: styles.arrowRight,
   };
 
-  const chooseTooltipBallonArrowStyle = tooltipBallonArrowStyles[arrowPosition];
+  const chosenArrowPositionStyle = arrowPositionsStyles[arrowPosition];
 
-  const tooltipBallonArrowStyle = StyleSheet.flatten([
-    styles.arrowDefaultStyle,
-    chooseTooltipBallonArrowStyle,
+  const defaultArrowStyle = StyleSheet.flatten([
+    styles.arrowDefault,
+    chosenArrowPositionStyle,
   ]);
 
   return (
-    <View style={defaultStyle} onLayout={onLayoutBalloon}>
+    <View style={defaultContainerStyle} onLayout={onLayoutBalloon}>
       {children}
       <TooltipBallonArrow
-        style={tooltipBallonArrowStyle}
+        style={defaultArrowStyle}
         position={arrowPosition}
+        color={arrowColor}
+        size={arrowSize}
       />
     </View>
   );
