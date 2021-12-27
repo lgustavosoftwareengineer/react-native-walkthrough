@@ -52,7 +52,4 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  background: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
 });
