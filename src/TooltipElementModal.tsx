@@ -1,3 +1,4 @@
+import {BlurView} from '@react-native-community/blur';
 import React, {useState} from 'react';
 import {
   StyleSheet,
@@ -9,7 +10,6 @@ import {
   Dimensions,
   LayoutRectangle,
   LayoutChangeEvent,
-  ViewProps,
 } from 'react-native';
 import TooltipBalloon from './TooltipBalloon/TooltipBalloon';
 import {TooltipBalloonArrowPosition} from './TooltipBalloon/TooltipBalloonArrow';
@@ -34,7 +34,8 @@ export type TooltipElementModalProps = {
   tooltipBallonContent: React.ReactNode;
   ballonPosition?: BalloonPositionType;
   ballonStyle?: StyleProp<ViewStyle>;
-  backgroundComponent?: React.ComponentType<ViewProps>;
+  style?: StyleProp<ViewStyle>;
+  blurAmount?: number;
 };
 
 const ARROW_POSITIONS = {
@@ -60,7 +61,8 @@ export default function TooltipElementModal({
   tooltipBallonContent,
   ballonPosition = 'bottom',
   ballonStyle,
-  backgroundComponent,
+  blurAmount = 0,
+  style,
 }: TooltipElementModalProps) {
   function onLayoutBalloon(event: LayoutChangeEvent) {
     const layout = event.nativeEvent.layout;
@@ -135,7 +137,9 @@ export default function TooltipElementModal({
     ballonStyle,
   ]);
 
-  const BackgroundComponent = backgroundComponent ?? View;
+  const backgroundStyle = StyleSheet.flatten([styles.background, style]);
+
+  const isUsingBlur = Boolean(blurAmount);
 
   return (
     <View style={styles.container}>
@@ -144,8 +148,15 @@ export default function TooltipElementModal({
         visible={visible}
         onRequestClose={onRequestClose}
         transparent>
+        {isUsingBlur && (
+          <BlurView
+            style={StyleSheet.absoluteFill}
+            blurType="light"
+            blurAmount={blurAmount}
+          />
+        )}
         <TouchableWithoutFeedback onPress={onRequestClose}>
-          <BackgroundComponent style={styles.background}>
+          <View style={backgroundStyle}>
             <View style={styles.element}>{children}</View>
             <TooltipBalloon
               style={tooltipBallonStyle}
@@ -154,7 +165,7 @@ export default function TooltipElementModal({
               onLayoutBalloon={onLayoutBalloon}>
               {tooltipBallonContent}
             </TooltipBalloon>
-          </BackgroundComponent>
+          </View>
         </TouchableWithoutFeedback>
       </Modal>
     </View>

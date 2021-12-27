@@ -10,6 +10,8 @@ import {
 
 import TooltipElement from './src/TooltipElement';
 
+const BLUR_AMOUNT = 1;
+
 const TestComponent = () => {
   return (
     <View style={styles.testComponent}>
@@ -52,7 +54,8 @@ const App = () => {
           onRequestClose={() => setVisible(false)}
           tooltipBallonContent={<TooltipBalloonContent />}
           ballonPosition="bottom"
-          ballonStyle={styles.ballon}>
+          ballonStyle={styles.ballon}
+          blurAmount={BLUR_AMOUNT}>
           <TestComponent />
         </TooltipElement>
       </ScrollView>
