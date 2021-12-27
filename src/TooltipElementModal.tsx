@@ -52,6 +52,7 @@ function calculateTooltipBalloonHorizontalPosition(
 }
 
 const {width: SCREEN_WIDTH} = Dimensions.get('screen');
+const MODAL_BACKGROUND_COLOR = 'rgba(0,0,0,0.2)';
 
 export default function TooltipElementModal({
   visible,
@@ -95,7 +96,7 @@ export default function TooltipElementModal({
       position: 'absolute',
     },
     background: {
-      backgroundColor: 'rgba(0,0,0,0.5)',
+      backgroundColor: MODAL_BACKGROUND_COLOR,
       flex: 1,
     },
     tooltipBallonTop: {
