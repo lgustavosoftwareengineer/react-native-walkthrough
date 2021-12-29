@@ -2,11 +2,9 @@ import React, {createContext, useCallback, useState} from 'react';
 
 export type Walkthrough = {
   registry: (id: string) => void;
-  verifyIfExistsById: (id: string) => boolean;
   start: (intervalToStart?: number) => void;
   callNextElement: (intervalToCallTheNext?: number) => void;
   getProperties(id: string): WalkthroughElement;
-  registryMultiplesIds: (ids: string[]) => void;
 };
 
 export type WalkthroughElement = {
@@ -71,15 +69,6 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
       setElementsList(prevState => [...prevState, walkthroughElement]);
     },
     [verifyIfExistsById],
-  );
-
-  const registryMultiplesIds = useCallback(
-    (ids: string[]) => {
-      ids.map(id => {
-        registry(id);
-      });
-    },
-    [registry],
   );
 
   const alreadyFinished = useCallback(() => {
@@ -208,10 +197,8 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
       value={{
         registry,
         start,
-        verifyIfExistsById,
         callNextElement,
         getProperties,
-        registryMultiplesIds,
       }}
       {...props}
     />
