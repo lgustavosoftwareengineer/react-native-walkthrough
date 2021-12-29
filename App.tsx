@@ -7,8 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
-
-import TooltipElement from './src/TooltipElement';
+import {TooltipElement} from 'tooltip-element';
 
 const BLUR_AMOUNT = 1;
 
