@@ -100,7 +100,7 @@ const App = () => {
             ),
             ballonStyle: styles.ballon,
             blurAmount: BLUR_AMOUNT,
-            ballonPosition: 'bottom',
+            ballonPosition: 'top',
           }}>
           <TestComponent />
         </WalkthroughElement>
