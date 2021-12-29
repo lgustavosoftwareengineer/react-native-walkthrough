@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useState} from 'react';
 import {LayoutChangeEvent, Omit, StyleSheet, View} from 'react-native';
 import TooltipElementModal, {
   TooltipElementModalProps,
@@ -20,20 +20,17 @@ export default function TooltipElement({
   children,
   ...props
 }: TooltipElementProps) {
-  const elementMeasuresInfos = useRef<ElementMeasuresInfos>({
-    x: 0,
-    y: 0,
-    height: 0,
-    width: 0,
-  }).current;
+  const [elementMeasuresInfos, setElementMeasuresInfos] =
+    useState<ElementMeasuresInfos>({
+      x: 0,
+      y: 0,
+      height: 0,
+      width: 0,
+    });
 
   function getChildrenPosition(event: LayoutChangeEvent) {
     const layout = event.nativeEvent.layout;
-
-    elementMeasuresInfos.x = layout.x;
-    elementMeasuresInfos.y = layout.y;
-    elementMeasuresInfos.height = layout.height;
-    elementMeasuresInfos.width = layout.width;
+    setElementMeasuresInfos(layout);
   }
 
   return (
