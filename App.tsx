@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   Button,
   SafeAreaView,
@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import {TooltipElement} from 'tooltip-element';
+import {useWalkthrough, WalkthroughElement} from 'walkthrough';
 
 const BLUR_AMOUNT = 1;
 
@@ -19,23 +19,16 @@ const TestComponent = () => {
   );
 };
 
-const TooltipBalloonContent = () => {
+const TooltipBalloonContent = ({content = ''}) => {
   return (
     <View>
-      <Text style={styles.tooltipBalloonContent}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ornare
-        maximus sapien in sodales. Integer porta leo non justo porta dignissim.
-        Quisque pretium odio dui, at varius ex viverra id. Nunc efficitur
-        aliquet pretium. Suspendisse ornare elit vel purus laoreet commodo. In
-        non accumsan nisi. Donec imperdiet tortor
-      </Text>
+      <Text style={styles.tooltipBalloonContent}>{content}</Text>
     </View>
   );
 };
 
 const App = () => {
-  const [visible1, setVisible1] = useState(false);
-  const [visible2, setVisible2] = useState(false);
+  const {start} = useWalkthrough();
 
   return (
     <SafeAreaView>
@@ -43,34 +36,74 @@ const App = () => {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.contentContainer}>
         <View>
-          <Button title={'Abrir modal'} onPress={() => setVisible1(true)} />
+          <Button
+            title={'Começar o passo a passo'}
+            onPress={() => start(500)}
+          />
         </View>
-        <TestComponent />
-        <TestComponent />
-        <TestComponent />
-        <TooltipElement
-          visible={visible1}
-          onRequestClose={() => {
-            setVisible1(false);
-            setTimeout(() => {
-              setVisible2(true);
-            }, 500);
-          }}
-          tooltipBallonContent={<TooltipBalloonContent />}
-          ballonPosition="bottom"
-          ballonStyle={styles.ballon}
-          blurAmount={BLUR_AMOUNT}>
+
+        <WalkthroughElement
+          id="first-element"
+          tooltipElementProps={{
+            tooltipBallonContent: (
+              <TooltipBalloonContent content="First Element" />
+            ),
+            ballonStyle: styles.ballon,
+            blurAmount: BLUR_AMOUNT,
+            ballonPosition: 'bottom',
+          }}>
           <TestComponent />
-        </TooltipElement>
-        <TooltipElement
-          visible={visible2}
-          onRequestClose={() => setVisible2(false)}
-          tooltipBallonContent={<TooltipBalloonContent />}
-          ballonPosition="bottom"
-          ballonStyle={styles.ballon}
-          blurAmount={BLUR_AMOUNT}>
+        </WalkthroughElement>
+
+        <WalkthroughElement
+          id="second-element"
+          tooltipElementProps={{
+            tooltipBallonContent: (
+              <TooltipBalloonContent content="Second Element" />
+            ),
+            ballonStyle: styles.ballon,
+            blurAmount: BLUR_AMOUNT,
+            ballonPosition: 'bottom',
+          }}>
           <TestComponent />
-        </TooltipElement>
+        </WalkthroughElement>
+        <WalkthroughElement
+          id="thirty-element"
+          tooltipElementProps={{
+            tooltipBallonContent: (
+              <TooltipBalloonContent content="Thirty Element" />
+            ),
+            ballonStyle: styles.ballon,
+            blurAmount: BLUR_AMOUNT,
+            ballonPosition: 'bottom',
+          }}>
+          <TestComponent />
+        </WalkthroughElement>
+        <WalkthroughElement
+          id="forty-element"
+          tooltipElementProps={{
+            tooltipBallonContent: (
+              <TooltipBalloonContent content="Forty Element" />
+            ),
+            ballonStyle: styles.ballon,
+            blurAmount: BLUR_AMOUNT,
+            ballonPosition: 'bottom',
+          }}>
+          <TestComponent />
+        </WalkthroughElement>
+        <WalkthroughElement
+          id="fifty-element"
+          onRequestClose={() => console.log('Terminou')}
+          tooltipElementProps={{
+            tooltipBallonContent: (
+              <TooltipBalloonContent content="Fifty Element" />
+            ),
+            ballonStyle: styles.ballon,
+            blurAmount: BLUR_AMOUNT,
+            ballonPosition: 'bottom',
+          }}>
+          <TestComponent />
+        </WalkthroughElement>
       </ScrollView>
     </SafeAreaView>
   );
