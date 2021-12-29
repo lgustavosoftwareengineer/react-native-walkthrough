@@ -80,7 +80,7 @@ export default function TooltipElementModal({
 
   const isTheElementPositionedInRight = x >= SCREEN_WIDTH / 2;
 
-  const ballonSpaceFromBottomToElement = tooltipBalloonHeight / 5;
+  const ballonSpaceFromBottomToElement = tooltipBalloonHeight / 2.5;
 
   const styles = StyleSheet.create({
     container: {
@@ -100,7 +100,7 @@ export default function TooltipElementModal({
       flex: 1,
     },
     tooltipBallonTop: {
-      bottom: y - height + ballonSpaceFromBottomToElement,
+      bottom: y + height + ballonSpaceFromBottomToElement,
       ...calculateTooltipBalloonHorizontalPosition(
         isTheElementPositionedInRight,
       ),
