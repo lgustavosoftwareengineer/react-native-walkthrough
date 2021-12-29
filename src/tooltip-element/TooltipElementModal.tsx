@@ -100,7 +100,7 @@ export default function TooltipElementModal({
       flex: 1,
     },
     tooltipBallonTop: {
-      bottom: y - height + ballonSpaceFromBottomToElement,
+      top: y - height + ballonSpaceFromBottomToElement,
       ...calculateTooltipBalloonHorizontalPosition(
         isTheElementPositionedInRight,
       ),
