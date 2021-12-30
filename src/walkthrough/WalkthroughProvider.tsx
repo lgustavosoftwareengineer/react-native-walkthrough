@@ -65,7 +65,10 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
         visible: false,
       };
 
-      setWalkthroughItems(prevState => [...prevState, walkthroughElement]);
+      setWalkthroughItems(prevWalkthroughItems => [
+        ...prevWalkthroughItems,
+        walkthroughElement,
+      ]);
     },
     [verifyIfExistsById],
   );
