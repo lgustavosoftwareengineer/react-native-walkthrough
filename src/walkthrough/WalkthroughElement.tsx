@@ -20,7 +20,7 @@ export default function WalkthroughElement({
   tooltipElementProps,
   intervalToCallTheNext = 0,
 }: WalkthroughElementProps) {
-  const {getProperties, callNextElement, registry} = useWalkthrough();
+  const {getProperties, callNext, registry} = useWalkthrough();
 
   useEffect(() => {
     registry(id);
@@ -28,8 +28,8 @@ export default function WalkthroughElement({
 
   const onRequestClose = useCallback(() => {
     onRequestCloseFromProps && onRequestCloseFromProps();
-    callNextElement(intervalToCallTheNext);
-  }, [callNextElement, intervalToCallTheNext, onRequestCloseFromProps]);
+    callNext(intervalToCallTheNext);
+  }, [callNext, intervalToCallTheNext, onRequestCloseFromProps]);
 
   const walkthroughElementProps = {
     ...getProperties(id),

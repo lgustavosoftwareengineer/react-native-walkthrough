@@ -8,7 +8,7 @@ export type WalkthroughItem = {
 export type Walkthrough = {
   registry: (id: string) => void;
   start: (intervalToStart?: number) => void;
-  callNextElement: (intervalToCallTheNext?: number) => void;
+  callNext: (intervalToCallTheNext?: number) => void;
   getProperties(id: string): WalkthroughItem;
   clean: () => void;
 };
@@ -139,7 +139,7 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
     [walkthroughItems, isListEmpty],
   );
 
-  const callNextElement = useCallback(
+  const callNext = useCallback(
     (intervalToCallTheNext = 0) => {
       setTimeout(() => {
         if (alreadyFinished()) {
@@ -206,7 +206,7 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
       value={{
         registry,
         start,
-        callNextElement,
+        callNext,
         getProperties,
         clean,
       }}
