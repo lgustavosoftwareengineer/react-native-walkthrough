@@ -83,9 +83,11 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
       return true;
     }
 
-    const {visible} = walkthroughItems[walkthroughItems.length - 1];
+    const lastWalkthroughItem = walkthroughItems[walkthroughItems.length - 1];
 
-    return visible;
+    const isLastWalkthroughItemVisible = lastWalkthroughItem.visible;
+
+    return isLastWalkthroughItemVisible;
   }, [walkthroughItems, isListEmpty]);
 
   const resetOnFinish = useCallback(() => {
