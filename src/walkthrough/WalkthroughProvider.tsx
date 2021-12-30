@@ -10,6 +10,7 @@ export type Walkthrough = {
   start: (intervalToStart?: number) => void;
   callNextElement: (intervalToCallTheNext?: number) => void;
   getProperties(id: string): WalkthroughItem;
+  clean: () => void;
 };
 
 const WalkthroughContext = createContext<Walkthrough | undefined>(undefined);
@@ -68,6 +69,11 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
     },
     [verifyIfExistsById],
   );
+
+  const clean = useCallback(() => {
+    setWalkthroughItems([]);
+    setActualWalkthroughIndex(0);
+  }, []);
 
   const alreadyFinished = useCallback(() => {
     if (isListEmpty()) {
@@ -197,6 +203,7 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
         start,
         callNextElement,
         getProperties,
+        clean,
       }}
       {...props}
     />
