@@ -81,7 +81,7 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
     return visible;
   }, [elementsList, isListEmpty]);
 
-  const reset = useCallback(() => {
+  const resetOnFinish = useCallback(() => {
     const actualElement = elementsList[actualElementIndex];
 
     const finishedActualElement: WalkthroughElement = {
@@ -134,7 +134,7 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
     (intervalToCallTheNext = 0) => {
       setTimeout(() => {
         if (alreadyFinished()) {
-          return reset();
+          return resetOnFinish();
         }
 
         const actualElement = elementsList[actualElementIndex];
@@ -173,7 +173,7 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
         setActualElementIndex(nextElementIndex);
       }, intervalToCallTheNext);
     },
-    [actualElementIndex, alreadyFinished, elementsList, reset],
+    [actualElementIndex, alreadyFinished, elementsList, resetOnFinish],
   );
 
   const getProperties = useCallback(
