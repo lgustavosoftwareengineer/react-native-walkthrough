@@ -46,11 +46,7 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
     (id: string) => {
       const foundElement = findAElementById(id);
 
-      if (!foundElement) {
-        return false;
-      }
-
-      return true;
+      return Boolean(foundElement);
     },
     [findAElementById],
   );
