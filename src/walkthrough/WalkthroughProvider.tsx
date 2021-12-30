@@ -107,13 +107,13 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
       actualWalkthroughIndex + 1,
     );
 
-    const newElementsList = [
+    const newWalkthoughItems = [
       ...firstPartFromNewWalkthroughItems,
       finishedActualWalkthroughItem,
       ...secondPartFromNewWalkthroughItems,
     ];
 
-    setWalkthroughItems(newElementsList);
+    setWalkthroughItems(newWalkthoughItems);
     setActualWalkthroughIndex(0);
   }, [actualWalkthroughIndex, walkthroughItems]);
 
@@ -171,13 +171,13 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
           nextElementIndex + 1,
         );
 
-        const newElementsList = Array.prototype.concat(
+        const newWalkthroughItems = Array.prototype.concat(
           firstPartFromNewWalkthroughItems,
           [finishedActualWalkthroughItem, startedNextElement],
           secondPartFromNewWalkthroughItems,
         );
 
-        setWalkthroughItems(newElementsList);
+        setWalkthroughItems(newWalkthroughItems);
 
         setActualWalkthroughIndex(nextElementIndex);
       }, intervalToCallTheNext);
