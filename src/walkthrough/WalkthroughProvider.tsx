@@ -1,15 +1,15 @@
 import React, {createContext, useCallback, useState} from 'react';
 
+export type WalkthroughItem = {
+  id: string;
+  visible: boolean;
+};
+
 export type Walkthrough = {
   registry: (id: string) => void;
   start: (intervalToStart?: number) => void;
   callNextElement: (intervalToCallTheNext?: number) => void;
-  getProperties(id: string): WalkthroughElement;
-};
-
-export type WalkthroughElement = {
-  id: string;
-  visible: boolean;
+  getProperties(id: string): WalkthroughItem;
 };
 
 const WalkthroughContext = createContext<Walkthrough | undefined>(undefined);
@@ -19,36 +19,38 @@ export type WalkthroughProviderProps = {
 };
 
 export default function WalkthroughProvider(props: WalkthroughProviderProps) {
-  const [elementsList, setElementsList] = useState<WalkthroughElement[]>([]);
+  const [walkthroughItems, setWalkthroughItems] = useState<WalkthroughItem[]>(
+    [],
+  );
 
-  const [actualElementIndex, setActualElementIndex] = useState(0);
+  const [actualWalkthroughIndex, setActualWalkthroughIndex] = useState(0);
 
   const isListEmpty = useCallback(() => {
-    return elementsList.length === 0;
-  }, [elementsList.length]);
+    return walkthroughItems.length === 0;
+  }, [walkthroughItems.length]);
 
-  const findAElementById = useCallback(
-    (id: string): WalkthroughElement | undefined => {
+  const findAItemById = useCallback(
+    (id: string): WalkthroughItem | undefined => {
       if (isListEmpty()) {
         return undefined;
       }
 
-      const foundElement = elementsList.find(
+      const foundWalkthroughItem = walkthroughItems.find(
         lisElement => lisElement.id === id,
       );
 
-      return foundElement;
+      return foundWalkthroughItem;
     },
-    [elementsList, isListEmpty],
+    [walkthroughItems, isListEmpty],
   );
 
   const verifyIfExistsById = useCallback(
     (id: string) => {
-      const foundElement = findAElementById(id);
+      const foundWalkthroughItem = findAItemById(id);
 
-      return Boolean(foundElement);
+      return Boolean(foundWalkthroughItem);
     },
-    [findAElementById],
+    [findAItemById],
   );
 
   const registry = useCallback(
@@ -57,12 +59,12 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
         return;
       }
 
-      const walkthroughElement: WalkthroughElement = {
+      const walkthroughElement: WalkthroughItem = {
         id,
         visible: false,
       };
 
-      setElementsList(prevState => [...prevState, walkthroughElement]);
+      setWalkthroughItems(prevState => [...prevState, walkthroughElement]);
     },
     [verifyIfExistsById],
   );
@@ -72,58 +74,58 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
       return true;
     }
 
-    const {visible} = elementsList[elementsList.length - 1];
+    const {visible} = walkthroughItems[walkthroughItems.length - 1];
 
     return visible;
-  }, [elementsList, isListEmpty]);
+  }, [walkthroughItems, isListEmpty]);
 
   const resetOnFinish = useCallback(() => {
-    const actualElement = elementsList[actualElementIndex];
+    const actualWalkthroughItem = walkthroughItems[actualWalkthroughIndex];
 
-    const finishedActualElement: WalkthroughElement = {
-      ...actualElement,
+    const finishedActualWalkthroughItem: WalkthroughItem = {
+      ...actualWalkthroughItem,
       visible: false,
     };
 
-    const firstPartFromNewElementsList = elementsList.slice(
+    const firstPartFromNewWalkthroughItems = walkthroughItems.slice(
       0,
-      actualElementIndex,
+      actualWalkthroughIndex,
     );
 
-    const secondPartFromNewElementsList = elementsList.slice(
-      actualElementIndex + 1,
+    const secondPartFromNewWalkthroughItems = walkthroughItems.slice(
+      actualWalkthroughIndex + 1,
     );
 
     const newElementsList = [
-      ...firstPartFromNewElementsList,
-      finishedActualElement,
-      ...secondPartFromNewElementsList,
+      ...firstPartFromNewWalkthroughItems,
+      finishedActualWalkthroughItem,
+      ...secondPartFromNewWalkthroughItems,
     ];
 
-    setElementsList(newElementsList);
-    setActualElementIndex(0);
-  }, [actualElementIndex, elementsList]);
+    setWalkthroughItems(newElementsList);
+    setActualWalkthroughIndex(0);
+  }, [actualWalkthroughIndex, walkthroughItems]);
 
   const start = useCallback(
     (intervalToStart = 0) => {
       setTimeout(() => {
         if (!isListEmpty()) {
           const [firstWalkthroughElement, ...elementsListWithoutFirstElement] =
-            elementsList;
+            walkthroughItems;
 
-          const startedFirstWalkthroughElement: WalkthroughElement = {
+          const startedFirstWalkthroughElement: WalkthroughItem = {
             ...firstWalkthroughElement,
             visible: true,
           };
 
-          setElementsList([
+          setWalkthroughItems([
             startedFirstWalkthroughElement,
             ...elementsListWithoutFirstElement,
           ]);
         }
       }, intervalToStart);
     },
-    [elementsList, isListEmpty],
+    [walkthroughItems, isListEmpty],
   );
 
   const callNextElement = useCallback(
@@ -133,59 +135,59 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
           return resetOnFinish();
         }
 
-        const actualElement = elementsList[actualElementIndex];
+        const actualWalkthroughItem = walkthroughItems[actualWalkthroughIndex];
 
-        const finishedActualElement: WalkthroughElement = {
-          ...actualElement,
+        const finishedActualWalkthroughItem: WalkthroughItem = {
+          ...actualWalkthroughItem,
           visible: false,
         };
 
-        const nextElementIndex = actualElementIndex + 1;
+        const nextElementIndex = actualWalkthroughIndex + 1;
 
-        const nextElement = elementsList[nextElementIndex];
+        const nextElement = walkthroughItems[nextElementIndex];
 
-        const startedNextElement: WalkthroughElement = {
+        const startedNextElement: WalkthroughItem = {
           ...nextElement,
           visible: true,
         };
 
-        const firstPartFromNewElementsList = elementsList.slice(
+        const firstPartFromNewWalkthroughItems = walkthroughItems.slice(
           0,
           nextElementIndex - 1,
         );
 
-        const secondPartFromNewElementsList = elementsList.slice(
+        const secondPartFromNewWalkthroughItems = walkthroughItems.slice(
           nextElementIndex + 1,
         );
 
         const newElementsList = Array.prototype.concat(
-          firstPartFromNewElementsList,
-          [finishedActualElement, startedNextElement],
-          secondPartFromNewElementsList,
+          firstPartFromNewWalkthroughItems,
+          [finishedActualWalkthroughItem, startedNextElement],
+          secondPartFromNewWalkthroughItems,
         );
 
-        setElementsList(newElementsList);
+        setWalkthroughItems(newElementsList);
 
-        setActualElementIndex(nextElementIndex);
+        setActualWalkthroughIndex(nextElementIndex);
       }, intervalToCallTheNext);
     },
-    [actualElementIndex, alreadyFinished, elementsList, resetOnFinish],
+    [actualWalkthroughIndex, alreadyFinished, walkthroughItems, resetOnFinish],
   );
 
   const getProperties = useCallback(
-    (id: string): WalkthroughElement => {
-      const foundElement = findAElementById(id);
+    (id: string): WalkthroughItem => {
+      const foundWalkthroughItem = findAItemById(id);
 
-      if (!foundElement) {
+      if (!foundWalkthroughItem) {
         return {
           id,
           visible: false,
         };
       }
 
-      return foundElement;
+      return foundWalkthroughItem;
     },
-    [findAElementById],
+    [findAItemById],
   );
 
   return (
