@@ -116,17 +116,17 @@ export default function WalkthroughProvider(props: WalkthroughProviderProps) {
     (intervalToStart = 0) => {
       setTimeout(() => {
         if (!isListEmpty()) {
-          const [firstWalkthroughElement, ...elementsListWithoutFirstElement] =
+          const [firstWalkthroughItem, ...walkthroughItemsWithoutFirstElement] =
             walkthroughItems;
 
-          const startedFirstWalkthroughElement: WalkthroughItem = {
-            ...firstWalkthroughElement,
+          const startedFirstWalkthroughItem: WalkthroughItem = {
+            ...firstWalkthroughItem,
             visible: true,
           };
 
           setWalkthroughItems([
-            startedFirstWalkthroughElement,
-            ...elementsListWithoutFirstElement,
+            startedFirstWalkthroughItem,
+            ...walkthroughItemsWithoutFirstElement,
           ]);
         }
       }, intervalToStart);
